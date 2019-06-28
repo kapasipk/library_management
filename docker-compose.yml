@@ -14,13 +14,6 @@ services:
     image: postgres:10.1-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-    ports:
-      - "33306:3306"
-    environment:
-      - MYSQL_ROOT_PASSWORD=123
-      - MYSQL_DATABASE=lib
-      - MYSQL_USER=lib
-      - MYSQL_PASSWORD=123
 
 volumes:
   postgres_data:
