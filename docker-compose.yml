@@ -1,9 +1,8 @@
 version: "3"
 services:
   app:
-    restart: always
     build: . # Current directory!
-    command: "python3 manage.py runserver 0.0.0.0:8000"
+    command: "python3 my_apps/manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
     ports:

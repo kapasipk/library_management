@@ -7,6 +7,7 @@ ENV PYTHONUNBUFFERED 1
 
 # Set work directory
 RUN mkdir /code
+RUN pip3 install django
 WORKDIR /code
 
 # Install dependencies
