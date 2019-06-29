@@ -41,7 +41,7 @@ class ExternalBookViewSet(viewsets.ModelViewSet):
 
     def list(self, request):
         query_data = {}
-        filter_attrs = ['name', 'country', 'publisher', 'release_date']
+        filter_attrs = ['name'] # Add more attrs here
         for attr in filter_attrs:
             val = self.request.query_params.get(attr, None)
             if val is not None:
