@@ -34,3 +34,7 @@ class Book(models.Model):
 
     class Meta:
         ordering = ["-created"]
+
+class ExternalBook(Book):
+    def __str__(self):
+        return "{}".format(self.name)

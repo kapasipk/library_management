@@ -20,17 +20,20 @@ from rest_framework import routers
 
 from lib_app.models import Book
 from lib_app.views import BookViewSet
+from lib_app.views import ExternalBookViewSet
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
 
-router.register(r'api/books', BookViewSet)
+router.register(r'api/v1/books', BookViewSet)
+router.register(r'api/external-books', ExternalBookViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('admin/', admin.site.urls),    
     path(r'', include(router.urls)),
-    path(r'api/', include('rest_framework.urls', namespace='rest_framework'))
+    path(r'api/v1/', include('rest_framework.urls', namespace='rest_framework')),
+    path(r'api/external-books', include('rest_framework.urls', namespace='rest_framework'))
 
 ]

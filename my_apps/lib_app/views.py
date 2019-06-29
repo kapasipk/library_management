@@ -1,8 +1,10 @@
-from lib_app.models import Book, Author
+from lib_app.models import Book, Author, ExternalBook
 from django.shortcuts import render
-from lib_app.serializers import BookSerializer
+from lib_app.serializers import BookSerializer, ExternalBookSerializer
 from rest_framework import routers, serializers, viewsets
 from rest_framework.response import Response
+
+import requests
 
 # ViewSets define the view behavior.
 class BookViewSet(viewsets.ModelViewSet):
@@ -26,3 +28,39 @@ class BookViewSet(viewsets.ModelViewSet):
             bookObj.authors.create(name=author_data)
         serializer = self.get_serializer(bookObj, many=False)
         return Response(serializer.data)
+
+    def get_object(self):
+        obj = super(BookViewSet, self).get_object()
+        # if obj.deleted is not None:
+        #     return Response(status=status.HTTP_404_NOT_FOUND)
+        return obj
+
+class ExternalBookViewSet(viewsets.ModelViewSet):
+    queryset = ExternalBook.objects.all()
+    serializer_class = ExternalBookSerializer
+
+    def list(self, request):
+        query_data = {}
+        filter_attrs = ['name', 'country', 'publisher', 'release_date']
+        for attr in filter_attrs:
+            val = self.request.query_params.get(attr, None)
+            if val is not None:
+                query_data[attr] = val
+        r = requests.get('https://www.anapioficeandfire.com/api/books', query_data)
+        books = r.json()
+        public_attrs_map = {
+            'name'          : 'name',
+            'isbn'          : 'isbn',
+            'authors'       : 'authors',
+            'numberOfPages' : 'number_of_pages',
+            'publisher'     : 'publisher',
+            'country'       : 'country',
+            'released'      : 'release_date'
+        }
+        data = []
+        for book in books:
+            bookData = {}
+            for k, v in public_attrs_map.items():
+                bookData[v] = book[k]
+            data.append(bookData)
+        return Response(data)
