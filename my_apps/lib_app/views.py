@@ -23,6 +23,6 @@ class BookViewSet(viewsets.ModelViewSet):
         authors_data = request.data.pop('authors')
         bookObj = Book.objects.create(**request.data)
         for author_data in authors_data:
-            Author.objects.create(book=bookObj, name=authors_data)
+            bookObj.authors.create(name=author_data)
         serializer = self.get_serializer(bookObj, many=False)
         return Response(serializer.data)
