@@ -1,6 +1,6 @@
-from lib_app.models import Book, Author, ExternalBook
+from lib_app.models import Book, Author
 from django.shortcuts import render
-from lib_app.serializers import BookSerializer, ExternalBookSerializer
+from lib_app.serializers import BookSerializer
 from rest_framework import routers, serializers, viewsets
 from rest_framework.response import Response
 
@@ -36,8 +36,8 @@ class BookViewSet(viewsets.ModelViewSet):
         return obj
 
 class ExternalBookViewSet(viewsets.ModelViewSet):
-    queryset = ExternalBook.objects.all()
-    serializer_class = ExternalBookSerializer
+    # Need a better way to handle this
+    queryset = Book.objects.all()
 
     def list(self, request):
         query_data = {}
