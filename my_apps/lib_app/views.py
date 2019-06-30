@@ -22,7 +22,7 @@ class BookViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def create(self, request):
-        authors_data = request.data.pop('authors')
+        authors_data = request.data.pop('authors') if 'authors' in request.data else []
         bookObj = Book.objects.create(**request.data)
         for author_data in authors_data:
             bookObj.authors.create(name=author_data)
