@@ -2,15 +2,9 @@ import uuid
 from django.db import models
 from datetime import datetime
 
-def generate_id():
-    return str(uuid.uuid4()).split("-")[-1] 
-
 class Author(models.Model):
     id    = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name  = models.CharField(max_length=255)
- 
-    def __str__(self):
-        return "{}".format(self.id)
 
 class Book(models.Model):
     id              = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -28,9 +22,6 @@ class Book(models.Model):
     def delete(self, *args, **kwargs):
         self.deleted = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.save()
-
-    def __str__(self):
-        return "{} - {}".format(self.name, self.id)
 
     class Meta:
         ordering = ["-created"]

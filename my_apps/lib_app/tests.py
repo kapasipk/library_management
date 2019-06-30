@@ -67,6 +67,21 @@ class BookViewSetTestCase(TestCase):
       for attr in serializer_attrs:
             self.assertIn(attr, response)
 
+      # Test list API with filters
+      response = client.get('/api/v1/books/', {'name': response['name'], 'publisher': response['publisher']})
+      self.assertEqual(response.status_code, 200)
+      response = json.loads(response.content)
+      self.assertEqual(len(response), 1)
+      response = response[0]
+      for attr in serializer_attrs:
+            self.assertIn(attr, response)
+
+      # Test list API with filters
+      response = client.get('/api/v1/books/', {'name': 'Hello world'})
+      self.assertEqual(response.status_code, 200)
+      response = json.loads(response.content)
+      self.assertEqual(len(response), 0)
+
       # Test PUT API
       new_name = self.fake.name()
       response = client.patch(
@@ -85,3 +100,20 @@ class BookViewSetTestCase(TestCase):
       # Test DELETE API
       response = client.delete('/api/v1/books/' + id + '/')
       self.assertEqual(response.status_code, 204)
+
+    def test_external_api(self):
+      client = APIClient()
+      response = client.get('/api/external-books/')
+      self.assertEqual(response.status_code, 200)
+      response = json.loads(response.content)
+      self.assertEqual(len(response), 10)
+      
+      response = client.get('/api/external-books/', {'name': 'A Game of Thrones'})
+      self.assertEqual(response.status_code, 200)
+      response = json.loads(response.content)
+      self.assertEqual(len(response), 1)
+
+      response = response[0]
+      serializer_attrs = ['name', 'isbn', 'authors', 'number_of_pages', 'publisher', 'country', 'release_date']
+      for attr in serializer_attrs:
+            self.assertIn(attr, response)
